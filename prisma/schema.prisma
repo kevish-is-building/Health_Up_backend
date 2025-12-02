@@ -8,16 +8,37 @@ datasource db {
 }
 
 model User {
-  id         String          @id @default(uuid())
-  username       String
-  email      String          @unique
-  password   String
-  image      String?
-  role       UserRole        @default(USER)
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
+  id           String          @id @default(uuid())
+  username     String
+  email        String          @unique
+  password     String?         // Made optional for OAuth users
+  image        String?
+  role         UserRole        @default(USER)
+  googleId     String?         @unique // For Google OAuth
+  provider     AuthProvider    @default(LOCAL)
+  isVerified   Boolean         @default(false)
+  refreshTokens RefreshToken[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([token])
+  @@index([userId])
 }
 enum UserRole {
   USER
   ADMIN
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
 }

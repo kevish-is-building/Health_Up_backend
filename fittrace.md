@@ -37,6 +37,10 @@ Vercel (frontend), Render (backend), NeonDb (database).
 - Create, read, update, delete workouts
 - Difficulty, equipment, instructions, optional tutorial
 
+### Workout Scheduling & Calendar
+- Add workouts to calendar
+- Recurring schedules
+- Reminders
 
 ### Nutrition Tracker
 - Log meals with food item, meal type, serving size, calories, macros, date/time

@@ -18,6 +18,8 @@ model User {
   provider     AuthProvider    @default(LOCAL)
   isVerified   Boolean         @default(false)
   refreshTokens RefreshToken[]
+  userWorkouts UserWorkout[]
+  mealLogs     MealLog[]
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
 }
@@ -33,6 +35,52 @@ model RefreshToken {
   @@index([token])
   @@index([userId])
 }
+
+model UserWorkout {
+  id           String           @id @default(uuid())
+  title        String?
+  bodyParts    String[]         // Array of body parts (e.g., ["chest", "shoulders"])
+  difficulty   DifficultyLevel?
+  equipment    String[]         // Array of equipment (e.g., ["dumbbells", "bench"])
+  instructions String[]         // Step-by-step instructions
+  tutorialLink String?          // Optional YouTube/video link
+  duration     Int?             // Duration in minutes
+  calories     Int?             // Estimated calories burned
+  sets         Int?             // Number of sets
+  reps         String?          // Number of reps (can be range like "8-12")
+  restTime     Int?             // Rest time between sets in seconds
+  notes        String?          // Additional notes
+  // isPublic     Boolean          @default(false) // Whether workout is public
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  
+  @@index([userId])
+
+}
+
+model MealLog {
+  id          String    @id @default(uuid())
+  mealType    MealType?
+  mealDate    DateTime? // Date and time of the meal
+  foodItem    String?   // Name of the food item
+  servingSize Float?    // Amount consumed
+  unit        String?   // Unit of measurement (grams, cups, pieces, etc.)
+  calories    Float?    // Total calories
+  protein     Float?    // Protein in grams
+  carbs       Float?    // Carbohydrates in grams
+  fat         Float?    // Fat in grams
+  notes       String?   // Optional notes about the meal
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([mealDate])
+  @@index([mealType])
+}
 enum UserRole {
   USER
   ADMIN
@@ -41,4 +89,20 @@ enum UserRole {
 enum AuthProvider {
   LOCAL
   GOOGLE
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  PRE_WORKOUT
+  POST_WORKOUT
 }

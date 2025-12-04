@@ -1,7 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRoutes from "./src/routes/auth.routes.js"
+import morgan from "morgan";
+import authRoutes from "./src/routes/auth.routes.js";
+import workoutRoutes from "./src/routes/workout.routes.js";
+import nutritionRoutes from "./src/routes/nutrition.routes.js";
 
 dotenv.config();
 
@@ -18,9 +21,12 @@ app.use(
     credentials: true,
   })
 );
+app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/workouts", workoutRoutes);
+app.use("/api/v1/nutrition", nutritionRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
